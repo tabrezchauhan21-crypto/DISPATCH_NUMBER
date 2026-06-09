@@ -3,26 +3,47 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-<title>Dispatch Portal | SAI Computers Ltd. – DVVNL AGRA</title>
+<title>Dispatch Portal | SAI Computers Ltd.</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@600;700&display=swap');
 :root{
   --navy:#0d1b2a;--navy2:#162032;--panel:#1a2840;--border:#2a3f5f;
   --cyan:#00c8e0;--cyan-dim:#007a8a;--gold:#f4b942;--white:#e8f0fe;
-  --muted:#7a9abf;--success:#22c55e;--error:#ef4444;--warn:#f59e0b;--wa:#25d366;
+  --muted:#7a9abf;--success:#22c55e;--error:#ef4444;--warn:#f59e0b;
   --radius:10px;
 }
 *{box-sizing:border-box;margin:0;padding:0;}
 body{background:var(--navy);color:var(--white);font-family:'Inter',sans-serif;min-height:100vh;display:flex;flex-direction:column;}
+
+/* ── LOGIN SCREEN ── */
+#login-screen{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;padding:20px;}
+.login-box{background:var(--panel);border:1px solid var(--border);border-radius:var(--radius);padding:36px 32px;width:100%;max-width:380px;}
+.login-logo{text-align:center;margin-bottom:28px;}
+.login-logo .co{font-size:15px;color:var(--cyan);font-weight:700;letter-spacing:.08em;text-transform:uppercase;}
+.login-logo .sub{font-size:12px;color:var(--muted);margin-top:4px;}
+.login-logo .badge{display:inline-block;background:var(--gold);color:var(--navy);font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px;margin-top:10px;}
+.login-box h2{font-size:16px;font-weight:700;margin-bottom:20px;color:var(--white);}
+.login-field{margin-bottom:14px;}
+.login-field label{display:block;font-size:12px;color:var(--cyan);font-weight:600;margin-bottom:5px;}
+.login-field input{width:100%;background:var(--navy2);border:1px solid var(--border);border-radius:7px;color:var(--white);font-family:'Inter',sans-serif;font-size:14px;padding:10px 13px;outline:none;transition:border .2s;}
+.login-field input:focus{border-color:var(--cyan);}
+.btn-login{width:100%;background:linear-gradient(90deg,var(--cyan),#009fb3);color:var(--navy);border:none;border-radius:8px;font-family:'Inter',sans-serif;font-size:15px;font-weight:700;padding:12px;cursor:pointer;margin-top:6px;transition:opacity .2s;}
+.btn-login:hover{opacity:.9;}
+#login-error{display:none;color:var(--error);font-size:12px;margin-top:10px;text-align:center;padding:8px;background:#2a0d0d;border-radius:6px;border:1px solid var(--error);}
+
+/* ── MAIN APP (hidden until login) ── */
+#main-app{display:none;flex-direction:column;min-height:100vh;}
 
 /* HEADER */
 header{background:var(--navy2);border-bottom:2px solid var(--cyan);padding:13px 24px;display:flex;align-items:center;gap:14px;flex-wrap:wrap;}
 .logo-block .company{font-size:13px;color:var(--cyan);font-weight:700;letter-spacing:.08em;text-transform:uppercase;}
 .logo-block .subtitle{font-size:11px;color:var(--muted);margin-top:2px;}
 .header-right{margin-left:auto;display:flex;align-items:center;gap:10px;}
-.header-badge{background:var(--gold);color:var(--navy);font-size:11px;font-weight:700;padding:4px 10px;border-radius:20px;letter-spacing:.05em;}
+.header-badge{background:var(--gold);color:var(--navy);font-size:11px;font-weight:700;padding:4px 10px;border-radius:20px;}
 .cfg-link{font-size:11px;color:var(--muted);cursor:pointer;text-decoration:underline;}
 .cfg-link:hover{color:var(--gold);}
+.logout-btn{font-size:11px;color:var(--error);cursor:pointer;border:1px solid var(--error);border-radius:6px;padding:4px 10px;transition:all .2s;}
+.logout-btn:hover{background:var(--error);color:#fff;}
 
 /* TABS */
 .tab-bar{display:flex;background:var(--navy2);border-bottom:1px solid var(--border);padding:0 20px;}
@@ -44,8 +65,7 @@ header{background:var(--navy2);border-bottom:2px solid var(--cyan);padding:13px 
 .field{margin-bottom:14px;}.field:last-child{margin-bottom:0;}
 label.flabel{display:block;font-size:12px;font-weight:600;color:var(--cyan);margin-bottom:5px;}
 label.flabel .req{color:var(--error);margin-left:2px;}
-
-input[type="text"],input[type="date"],input[type="tel"],select,textarea{
+input[type="text"],input[type="date"],select,textarea{
   width:100%;background:var(--navy2);border:1px solid var(--border);border-radius:7px;
   color:var(--white);font-family:'Inter',sans-serif;font-size:14px;padding:9px 12px;outline:none;transition:border .2s;
 }
@@ -54,7 +74,6 @@ select option{background:var(--navy2);}
 textarea{resize:vertical;min-height:60px;}
 input::placeholder,textarea::placeholder{color:var(--muted);}
 input[readonly]{color:var(--gold);cursor:default;}
-
 .two-col{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
 .three-col{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;}
 @media(max-width:520px){.two-col,.three-col{grid-template-columns:1fr;}}
@@ -67,8 +86,6 @@ input[readonly]{color:var(--gold);cursor:default;}
 .radio-item input[type="radio"]{accent-color:var(--cyan);width:15px;height:15px;flex-shrink:0;}
 .radio-item span{font-size:13px;color:var(--white);line-height:1.3;}
 .radio-item.selected{border-color:var(--cyan);background:#0d2233;}
-
-/* REVEAL */
 .reveal-box{display:none;margin-top:8px;}
 .reveal-box.show{display:block;}
 
@@ -79,15 +96,14 @@ input[readonly]{color:var(--gold);cursor:default;}
 .lstep.active{background:var(--cyan);color:var(--navy);border-color:var(--cyan);}
 .submitto-pane{display:none;}.submitto-pane.active{display:block;}
 .submit-trail{font-size:11px;color:var(--muted);margin-bottom:10px;padding:7px 10px;background:var(--navy2);border-radius:6px;border:1px solid var(--border);min-height:32px;}
-.submit-trail span{color:var(--gold);}
 
 /* SUBMIT BTN */
-.btn-submit{width:100%;background:linear-gradient(90deg,var(--cyan) 0%,#009fb3 100%);color:var(--navy);border:none;border-radius:8px;font-family:'Inter',sans-serif;font-size:15px;font-weight:700;padding:13px;cursor:pointer;letter-spacing:.04em;transition:opacity .2s,transform .1s;margin-top:6px;}
+.btn-submit{width:100%;background:linear-gradient(90deg,var(--cyan),#009fb3);color:var(--navy);border:none;border-radius:8px;font-family:'Inter',sans-serif;font-size:15px;font-weight:700;padding:13px;cursor:pointer;letter-spacing:.04em;transition:opacity .2s,transform .1s;margin-top:6px;}
 .btn-submit:hover{opacity:.9;}
 .btn-submit:active{transform:scale(.98);}
 .btn-submit:disabled{opacity:.5;cursor:not-allowed;}
 
-/* RESULT BOX */
+/* RESULT */
 #result-box{display:none;background:#0d2a1a;border:2px solid var(--success);border-radius:var(--radius);padding:24px;text-align:center;margin-bottom:16px;}
 .rlabel{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;margin-bottom:10px;}
 .dispatch-no{font-family:'JetBrains Mono',monospace;font-size:28px;font-weight:700;color:var(--success);letter-spacing:.08em;word-break:break-all;}
@@ -96,7 +112,6 @@ input[readonly]{color:var(--gold);cursor:default;}
 .rbtn{border-radius:7px;padding:8px 16px;font-size:13px;font-weight:600;cursor:pointer;border:none;transition:opacity .2s;}
 .rbtn:hover{opacity:.85;}
 .rbtn-copy{background:transparent;border:1px solid var(--success);color:var(--success);}
-.rbtn-wa{background:var(--wa);color:#fff;}
 .rbtn-dash{background:transparent;border:1px solid var(--cyan);color:var(--cyan);}
 .rbtn-new{background:transparent;border:1px solid var(--muted);color:var(--muted);}
 
@@ -111,9 +126,7 @@ input[readonly]{color:var(--gold);cursor:default;}
 #file-preview{display:none;margin-bottom:8px;}
 #file-preview img{max-width:100%;max-height:150px;border-radius:6px;border:1px solid var(--border);}
 #file-preview .fname{font-size:11px;color:var(--muted);margin-top:4px;}
-.wa-row{display:flex;gap:10px;align-items:flex-end;}
-.wa-row input{flex:1;}
-.btn-upload{background:var(--gold);color:var(--navy);border:none;border-radius:7px;padding:9px 14px;font-weight:700;font-size:13px;cursor:pointer;white-space:nowrap;}
+.btn-upload{width:100%;background:var(--gold);color:var(--navy);border:none;border-radius:7px;padding:10px;font-weight:700;font-size:13px;cursor:pointer;margin-top:4px;}
 .btn-upload:disabled{opacity:.5;cursor:not-allowed;}
 #upload-status{font-size:12px;margin-top:8px;display:none;}
 
@@ -138,7 +151,7 @@ input[readonly]{color:var(--gold);cursor:default;}
 .progress-bar{height:5px;background:var(--border);border-radius:3px;margin-top:7px;overflow:hidden;}
 .progress-fill{height:100%;border-radius:3px;background:var(--success);transition:width .6s;}
 
-/* FILTER ROW */
+/* FILTER */
 .filter-row{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:12px;}
 .filter-row input,.filter-row select{background:var(--navy2);border:1px solid var(--border);border-radius:7px;color:var(--white);font-family:'Inter',sans-serif;font-size:13px;padding:7px 11px;outline:none;}
 .filter-row input{flex:1;min-width:150px;}
@@ -146,7 +159,7 @@ input[readonly]{color:var(--gold);cursor:default;}
 .btn-refresh{background:transparent;border:1px solid var(--border);color:var(--muted);border-radius:7px;padding:7px 12px;font-size:12px;cursor:pointer;transition:all .2s;white-space:nowrap;}
 .btn-refresh:hover{border-color:var(--cyan);color:var(--cyan);}
 
-/* DASHBOARD TABLE */
+/* TABLE */
 .table-wrap{overflow-x:auto;border-radius:var(--radius);border:1px solid var(--border);}
 table{width:100%;border-collapse:collapse;font-size:13px;min-width:820px;}
 th{background:var(--navy2);color:var(--muted);font-weight:600;text-align:left;padding:10px 12px;border-bottom:1px solid var(--border);white-space:nowrap;cursor:pointer;user-select:none;}
@@ -172,9 +185,6 @@ tr:hover td{background:#192638;}
 .modal-card{background:var(--panel);border:1px solid var(--border);border-radius:var(--radius);padding:22px;width:100%;max-width:460px;margin:16px;}
 .modal-card h3{color:var(--gold);font-size:14px;margin-bottom:6px;}
 .modal-dispatch-badge{font-family:'JetBrains Mono',monospace;color:var(--cyan);font-size:12px;margin-bottom:14px;}
-.modal-card label{display:block;font-size:12px;color:var(--muted);font-weight:600;margin-bottom:5px;}
-.modal-card input[type="tel"]{width:100%;background:var(--navy2);border:1px solid var(--border);border-radius:7px;color:var(--white);font-family:'Inter',sans-serif;font-size:13px;padding:9px 12px;outline:none;margin-bottom:12px;}
-.modal-card input:focus{border-color:var(--cyan);}
 .upload-drop-sm{border:2px dashed var(--border);border-radius:8px;padding:14px;text-align:center;cursor:pointer;margin-bottom:10px;transition:border .2s;}
 .upload-drop-sm:hover,.upload-drop-sm.dragover{border-color:var(--cyan);background:#0d2233;}
 .upload-drop-sm p{font-size:12px;color:var(--muted);}
@@ -182,13 +192,13 @@ tr:hover td{background:#192638;}
 #modal-preview{display:none;margin-bottom:10px;}
 #modal-preview img{max-height:100px;border-radius:5px;border:1px solid var(--border);}
 #modal-preview .fname{font-size:11px;color:var(--muted);margin-top:4px;}
-.modal-actions{display:flex;gap:10px;margin-top:6px;}
+.modal-actions{display:flex;gap:10px;margin-top:12px;}
 .btn-modal-save{flex:1;background:var(--gold);color:var(--navy);border:none;border-radius:7px;padding:10px;font-weight:700;cursor:pointer;font-size:13px;}
 .btn-modal-save:disabled{opacity:.5;cursor:not-allowed;}
 .btn-modal-cancel{flex:1;background:transparent;border:1px solid var(--border);color:var(--muted);border-radius:7px;padding:10px;font-weight:600;cursor:pointer;font-size:13px;}
 #modal-status{font-size:12px;margin-top:8px;display:none;}
 
-/* CONFIG MODAL */
+/* CONFIG */
 .cfg-card{background:var(--panel);border:1px solid var(--border);border-radius:var(--radius);padding:22px;width:100%;max-width:420px;margin:16px;}
 .cfg-card h3{color:var(--gold);font-size:14px;margin-bottom:14px;}
 .cfg-card label{display:block;font-size:12px;color:var(--muted);margin-bottom:5px;}
@@ -197,7 +207,6 @@ tr:hover td{background:#192638;}
 .cfg-actions{display:flex;gap:10px;}
 .btn-cfg-save{flex:1;background:var(--gold);color:var(--navy);border:none;border-radius:7px;padding:9px;font-weight:700;cursor:pointer;}
 .btn-cfg-cancel{flex:1;background:transparent;border:1px solid var(--border);color:var(--muted);border-radius:7px;padding:9px;cursor:pointer;}
-.hint{font-size:11px;color:var(--muted);margin-top:-9px;margin-bottom:12px;}
 
 /* LOADER */
 #loader{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:200;align-items:center;justify-content:center;flex-direction:column;gap:12px;}
@@ -209,7 +218,31 @@ footer{text-align:center;color:var(--muted);font-size:11px;padding:13px;border-t
 </head>
 <body>
 
-<!-- HEADER -->
+<!-- ══ LOGIN SCREEN ══ -->
+<div id="login-screen">
+  <div class="login-box">
+    <div class="login-logo">
+      <div class="co">SAI Computers Ltd.</div>
+      <div class="sub">DVVNL – Agra MRI &amp; Cluster Billing</div>
+      <span class="badge">DISPATCH PORTAL</span>
+    </div>
+    <h2>Staff Login</h2>
+    <div class="login-field">
+      <label>Username</label>
+      <input type="text" id="login-user" placeholder="Enter username" autocomplete="off"/>
+    </div>
+    <div class="login-field">
+      <label>Password</label>
+      <input type="password" id="login-pass" placeholder="Enter password" onkeydown="if(event.key==='Enter')doLogin()"/>
+    </div>
+    <button class="btn-login" onclick="doLogin()">Login →</button>
+    <div id="login-error">❌ Invalid username or password</div>
+  </div>
+</div>
+
+<!-- ══ MAIN APP ══ -->
+<div id="main-app">
+
 <header>
   <div class="logo-block">
     <div class="company">SAI Computers Ltd.</div>
@@ -218,27 +251,25 @@ footer{text-align:center;color:var(--muted);font-size:11px;padding:13px;border-t
   <div class="header-right">
     <span class="header-badge">DISPATCH PORTAL v3.0</span>
     <span class="cfg-link" onclick="openConfig()">⚙ Settings</span>
+    <span class="logout-btn" onclick="doLogout()">Logout</span>
   </div>
 </header>
 
-<!-- TABS -->
 <div class="tab-bar">
   <div class="tab active" id="tab-form"      onclick="switchTab('form')">✏️&nbsp; New Dispatch</div>
   <div class="tab"        id="tab-dashboard" onclick="switchTab('dashboard')">📊&nbsp; Dashboard</div>
 </div>
 
-<!-- ══════════ TAB 1 — FORM ══════════ -->
+<!-- ══ TAB 1 — FORM ══ -->
 <div class="tab-content active" id="content-form">
 <div class="page">
 
-  <!-- Result -->
   <div id="result-box">
     <div class="rlabel">✅ Dispatch Number Generated</div>
     <div class="dispatch-no" id="dispatch-display">—</div>
     <div class="rmeta" id="dispatch-meta"></div>
     <div class="result-actions">
       <button class="rbtn rbtn-copy" onclick="copyDispatch()">📋 Copy</button>
-      <button class="rbtn rbtn-wa"   onclick="shareWhatsApp()">📲 WhatsApp</button>
       <button class="rbtn rbtn-dash" onclick="switchTab('dashboard')">📊 Dashboard</button>
       <button class="rbtn rbtn-new"  onclick="resetForm()">+ New Letter</button>
     </div>
@@ -253,23 +284,15 @@ footer{text-align:center;color:var(--muted);font-size:11px;padding:13px;border-t
         <img id="preview-img" src="" alt=""/>
         <div class="fname" id="preview-name"></div>
       </div>
-      <div class="wa-row">
-        <div style="flex:1">
-          <label class="flabel" style="color:var(--muted);font-size:11px;">WhatsApp Number (with country code)</label>
-          <input type="tel" id="wa-number" placeholder="919876543210"/>
-        </div>
-        <button class="btn-upload" id="upload-btn" onclick="uploadAndSend()">Upload &amp; Send</button>
-      </div>
+      <button class="btn-upload" id="upload-btn" onclick="uploadAndSend()">📎 Upload Office Copy</button>
       <div id="upload-status"></div>
     </div>
   </div>
 
-  <!-- Error -->
   <div id="error-box"></div>
 
   <form id="dispatch-form">
 
-    <!-- 1. Raised By -->
     <div class="card">
       <div class="card-title">1. Raised By</div>
       <div class="two-col">
@@ -284,7 +307,6 @@ footer{text-align:center;color:var(--muted);font-size:11px;padding:13px;border-t
       </div>
     </div>
 
-    <!-- 2. Period -->
     <div class="card">
       <div class="card-title">2. Report Period &amp; Submission Date</div>
       <div class="three-col">
@@ -312,7 +334,6 @@ footer{text-align:center;color:var(--muted);font-size:11px;padding:13px;border-t
       </div>
     </div>
 
-    <!-- 3. Project -->
     <div class="card">
       <div class="card-title">3. Project Name</div>
       <div class="field">
@@ -328,7 +349,6 @@ footer{text-align:center;color:var(--muted);font-size:11px;padding:13px;border-t
       </div>
     </div>
 
-    <!-- 4. Subject -->
     <div class="card">
       <div class="card-title">4. Subject of Letter</div>
       <div class="field">
@@ -337,7 +357,6 @@ footer{text-align:center;color:var(--muted);font-size:11px;padding:13px;border-t
       </div>
     </div>
 
-    <!-- 5. Submit To -->
     <div class="card">
       <div class="card-title">5. Submit To</div>
       <div class="level-stepper">
@@ -351,7 +370,6 @@ footer{text-align:center;color:var(--muted);font-size:11px;padding:13px;border-t
       <div class="submit-trail" id="submit-trail">Select level above to choose recipient</div>
       <input type="hidden" id="submit_to"/>
 
-      <!-- DISCOM -->
       <div class="submitto-pane active" id="pane-discom">
         <div class="two-col">
           <div class="field">
@@ -378,7 +396,6 @@ footer{text-align:center;color:var(--muted);font-size:11px;padding:13px;border-t
         </div>
       </div>
 
-      <!-- ZONE -->
       <div class="submitto-pane" id="pane-zone">
         <div class="two-col">
           <div class="field">
@@ -397,7 +414,6 @@ footer{text-align:center;color:var(--muted);font-size:11px;padding:13px;border-t
         </div>
       </div>
 
-      <!-- CIRCLE -->
       <div class="submitto-pane" id="pane-circle">
         <div class="two-col">
           <div class="field">
@@ -420,7 +436,6 @@ footer{text-align:center;color:var(--muted);font-size:11px;padding:13px;border-t
         </div>
       </div>
 
-      <!-- TEST -->
       <div class="submitto-pane" id="pane-test">
         <div class="two-col">
           <div class="field">
@@ -447,7 +462,6 @@ footer{text-align:center;color:var(--muted);font-size:11px;padding:13px;border-t
         </div>
       </div>
 
-      <!-- DIST -->
       <div class="submitto-pane" id="pane-dist">
         <div class="two-col">
           <div class="field">
@@ -475,7 +489,6 @@ footer{text-align:center;color:var(--muted);font-size:11px;padding:13px;border-t
         </div>
       </div>
 
-      <!-- SDO -->
       <div class="submitto-pane" id="pane-sdo">
         <div class="field">
           <label class="flabel">SDO Office &amp; Location <span class="req">*</span></label>
@@ -500,7 +513,7 @@ footer{text-align:center;color:var(--muted);font-size:11px;padding:13px;border-t
 </div>
 </div>
 
-<!-- ══════════ TAB 2 — DASHBOARD ══════════ -->
+<!-- ══ TAB 2 — DASHBOARD ══ -->
 <div class="tab-content" id="content-dashboard">
 <div class="dash-page">
   <p class="page-title">Dispatch Register</p>
@@ -542,9 +555,7 @@ footer{text-align:center;color:var(--muted);font-size:11px;padding:13px;border-t
       <option value="MRI">MRI PROJECT</option>
       <option value="CLUSTER">CLUSTER-4</option>
     </select>
-    <select id="filter-month" onchange="applyFilters()">
-      <option value="">All Months</option>
-    </select>
+    <select id="filter-month" onchange="applyFilters()"><option value="">All Months</option></select>
     <button class="btn-refresh" onclick="loadDashboard()">↻ Refresh</button>
   </div>
 
@@ -563,12 +574,14 @@ footer{text-align:center;color:var(--muted);font-size:11px;padding:13px;border-t
         </tr>
       </thead>
       <tbody id="table-body">
-        <tr><td colspan="8"><div class="empty-state"><div class="icon">📊</div><p>Switch to Dashboard tab to load data</p></div></td></tr>
+        <tr><td colspan="8"><div class="empty-state"><div class="icon">📊</div><p>Click Refresh to load data</p></div></td></tr>
       </tbody>
     </table>
   </div>
 </div>
 </div>
+
+</div><!-- end main-app -->
 
 <!-- Upload Modal -->
 <div class="modal-overlay" id="upload-modal">
@@ -584,8 +597,6 @@ footer{text-align:center;color:var(--muted);font-size:11px;padding:13px;border-t
       <img id="modal-preview-img" src="" alt=""/>
       <div class="fname" id="modal-preview-name"></div>
     </div>
-    <label>WhatsApp Number (optional)</label>
-    <input type="tel" id="modal-wa" placeholder="919876543210"/>
     <div class="modal-actions">
       <button class="btn-modal-save" id="modal-save-btn" onclick="doUpload()">Upload</button>
       <button class="btn-modal-cancel" onclick="closeUploadModal()">Cancel</button>
@@ -604,9 +615,6 @@ footer{text-align:center;color:var(--muted);font-size:11px;padding:13px;border-t
     <input type="text" id="cfg-fy" placeholder="2026-2027"/>
     <label>Location Code</label>
     <input type="text" id="cfg-loc" placeholder="AGRA"/>
-    <label>Default WhatsApp Number (with country code)</label>
-    <input type="tel" id="cfg-wa" placeholder="919876543210"/>
-    <p class="hint">Pre-fills WhatsApp field after dispatch is generated</p>
     <div class="cfg-actions">
       <button class="btn-cfg-save" onclick="saveConfig()">Save</button>
       <button class="btn-cfg-cancel" onclick="closeConfig()">Cancel</button>
@@ -614,18 +622,53 @@ footer{text-align:center;color:var(--muted);font-size:11px;padding:13px;border-t
   </div>
 </div>
 
-<!-- Loader -->
-<div id="loader">
-  <div class="spinner-lg"></div>
-  <div style="font-size:13px;color:var(--muted)">Loading…</div>
-</div>
+<div id="loader"><div class="spinner-lg"></div><div style="font-size:13px;color:var(--muted)">Loading…</div></div>
 
 <footer>SAI Computers Ltd. · DVVNL MRI &amp; Cluster Billing · Agra, UP &nbsp;|&nbsp; Dispatch Portal v3.0</footer>
 
 <script>
-// ═══════════════════════════════════
+// ════════════════════════════════════
+// LOGIN
+// ════════════════════════════════════
+const USERS = { 'SAI STAFF': 'SAI123' };
+
+function doLogin() {
+  var user = document.getElementById('login-user').value.trim().toUpperCase();
+  var pass = document.getElementById('login-pass').value;
+  var err  = document.getElementById('login-error');
+  if (USERS[user] && USERS[user] === pass) {
+    sessionStorage.setItem('dispatch_auth', '1');
+    document.getElementById('login-screen').style.display = 'none';
+    document.getElementById('main-app').style.display     = 'flex';
+    err.style.display = 'none';
+    initApp();
+  } else {
+    err.style.display = 'block';
+    document.getElementById('login-pass').value = '';
+    document.getElementById('login-pass').focus();
+  }
+}
+
+function doLogout() {
+  sessionStorage.removeItem('dispatch_auth');
+  document.getElementById('main-app').style.display    = 'none';
+  document.getElementById('login-screen').style.display = 'flex';
+  document.getElementById('login-user').value = '';
+  document.getElementById('login-pass').value = '';
+}
+
+// Auto-login check on page load
+window.onload = function() {
+  if (sessionStorage.getItem('dispatch_auth') === '1') {
+    document.getElementById('login-screen').style.display = 'none';
+    document.getElementById('main-app').style.display     = 'flex';
+    initApp();
+  }
+};
+
+// ════════════════════════════════════
 // HIERARCHY DATA
-// ═══════════════════════════════════
+// ════════════════════════════════════
 const HIER=[
   {zone:"AGRA",circle:"EDC FATEHBAD",test:"ETD-FATEHBAD",dist:"EDD-BAH"},
   {zone:"AGRA",circle:"EDC FATEHBAD",test:"ETD-FATEHBAD",dist:"EDD-ETMADPUR"},
@@ -706,17 +749,23 @@ const HIER=[
   {zone:"KANPUR-1",circle:"EDC KANPUR DEHAT",test:"ETD-KANPUR DEHAT",dist:"EDD-PUKHRAYAN"}
 ];
 
-// ═══════════════════════════════════
+// ════════════════════════════════════
 // CONFIG
-// ═══════════════════════════════════
+// ════════════════════════════════════
 let SCRIPT_URL = localStorage.getItem('dispatch_script_url') || '';
 let FY         = localStorage.getItem('dispatch_fy')         || '2026-2027';
 let LOC        = localStorage.getItem('dispatch_loc')        || 'AGRA';
-let DEF_WA     = localStorage.getItem('dispatch_wa')         || '';
 
-// ═══════════════════════════════════
+function initApp() {
+  document.getElementById('submission_date').value = new Date().toISOString().split('T')[0];
+  const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+  document.getElementById('report_month_name').value = MONTHS[new Date().getMonth()];
+  document.getElementById('report_year').value = String(new Date().getFullYear());
+}
+
+// ════════════════════════════════════
 // TABS
-// ═══════════════════════════════════
+// ════════════════════════════════════
 function switchTab(tab) {
   document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
   document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
@@ -725,9 +774,9 @@ function switchTab(tab) {
   if (tab === 'dashboard') loadDashboard();
 }
 
-// ═══════════════════════════════════
+// ════════════════════════════════════
 // RADIO
-// ═══════════════════════════════════
+// ════════════════════════════════════
 function selectRadio(el, hiddenId, value) {
   el.parentElement.querySelectorAll('.radio-item').forEach(r => r.classList.remove('selected'));
   el.classList.add('selected');
@@ -735,11 +784,10 @@ function selectRadio(el, hiddenId, value) {
   document.getElementById(hiddenId).value = value;
 }
 
-// ═══════════════════════════════════
+// ════════════════════════════════════
 // SUBMIT TO STEPPER
-// ═══════════════════════════════════
+// ════════════════════════════════════
 let _currentLevel = 'discom';
-
 function switchLevel(level) {
   _currentLevel = level;
   document.querySelectorAll('.lstep').forEach(s => s.classList.toggle('active', s.dataset.level === level));
@@ -749,27 +797,26 @@ function switchLevel(level) {
 }
 
 function buildSubmitTo() {
-  var val = '', trail = '';
+  let val = '', trail = '';
   if (_currentLevel === 'discom') {
-    var d = v('discom_desig');
-    var loc = v('discom_loc');
+    let d = v('discom_desig'), loc = v('discom_loc');
     if (loc === 'Other') loc = v('discom_loc_other');
     document.getElementById('discom_loc_other').classList.toggle('show', v('discom_loc') === 'Other');
     if (d && loc) { val = d + ' – ' + loc; trail = 'DISCOM → ' + val; }
   } else if (_currentLevel === 'zone') {
-    var z = v('zone_sel');
-    if (z) { val = 'CE (Chief Engineer) – Zone ' + z; trail = 'Zone: ' + z + ' → CE (Chief Engineer)'; }
+    let z = v('zone_sel');
+    if (z) { val = 'CE (Chief Engineer) – Zone ' + z; trail = 'Zone: ' + z + ' → CE'; }
   } else if (_currentLevel === 'circle') {
-    var z = v('circle_zone_sel'), c = v('circle_sel');
+    let z = v('circle_zone_sel'), c = v('circle_sel');
     if (z && c) { val = 'SE (Superintending Engineer) – ' + c + ' (Zone: ' + z + ')'; trail = 'Zone: ' + z + ' → ' + c + ' → SE'; }
   } else if (_currentLevel === 'test') {
-    var z = v('test_zone_sel'), t = v('test_sel'), d = v('test_desig');
+    let z = v('test_zone_sel'), t = v('test_sel'), d = v('test_desig');
     if (z && t && d) { val = d + ' – ' + t + ' (Zone: ' + z + ')'; trail = 'Zone: ' + z + ' → ' + t + ' → ' + d; }
   } else if (_currentLevel === 'dist') {
-    var z = v('dist_zone_sel'), dd = v('dist_sel'), d = v('dist_desig');
+    let z = v('dist_zone_sel'), dd = v('dist_sel'), d = v('dist_desig');
     if (z && dd && d) { val = d + ' – ' + dd + ' (Zone: ' + z + ')'; trail = 'Zone: ' + z + ' → ' + dd + ' → ' + d; }
   } else if (_currentLevel === 'sdo') {
-    var d = v('sdo_desig'), loc = v('sdo_details');
+    let d = v('sdo_desig'), loc = v('sdo_details');
     if (d === 'Other') { d = v('sdo_desig_other'); document.getElementById('sdo_desig_other').classList.add('show'); }
     else { document.getElementById('sdo_desig_other').classList.remove('show'); }
     if (loc) { val = loc + (d ? ' (' + d + ')' : ''); trail = 'SDO → ' + val; }
@@ -779,128 +826,87 @@ function buildSubmitTo() {
 }
 
 function populateCircles() {
-  var z = v('circle_zone_sel');
-  var items = [...new Set(HIER.filter(r => r.zone === z).map(r => r.circle))];
-  fillSelect('circle_sel', items, '— Select Circle —');
+  const z = v('circle_zone_sel');
+  fillSelect('circle_sel', [...new Set(HIER.filter(r => r.zone === z).map(r => r.circle))], '— Select Circle —');
   buildSubmitTo();
 }
 function populateTests() {
-  var z = v('test_zone_sel');
-  var items = [...new Set(HIER.filter(r => r.zone === z).map(r => r.test))];
-  fillSelect('test_sel', items, '— Select ETD —');
+  const z = v('test_zone_sel');
+  fillSelect('test_sel', [...new Set(HIER.filter(r => r.zone === z).map(r => r.test))], '— Select ETD —');
   buildSubmitTo();
 }
 function populateDists() {
-  var z = v('dist_zone_sel');
-  var items = [...new Set(HIER.filter(r => r.zone === z).map(r => r.dist))].sort();
-  fillSelect('dist_sel', items, '— Select EDD —');
+  const z = v('dist_zone_sel');
+  fillSelect('dist_sel', [...new Set(HIER.filter(r => r.zone === z).map(r => r.dist))].sort(), '— Select EDD —');
   buildSubmitTo();
 }
 function fillSelect(id, items, ph) {
-  document.getElementById(id).innerHTML = '<option value="">' + ph + '</option>' +
-    items.map(i => '<option>' + i + '</option>').join('');
+  document.getElementById(id).innerHTML = '<option value="">' + ph + '</option>' + items.map(i => '<option>' + i + '</option>').join('');
 }
 
-// ═══════════════════════════════════
+// ════════════════════════════════════
 // FORM SUBMIT
-// ═══════════════════════════════════
+// ════════════════════════════════════
 document.getElementById('dispatch-form').addEventListener('submit', async function(e) {
-  e.preventDefault();
-  hideError();
-  if (!SCRIPT_URL) { showError('Apps Script URL not configured. Click ⚙ Settings to set it.'); return; }
+  e.preventDefault(); hideError();
+  if (!SCRIPT_URL) { showError('Apps Script URL not configured. Click ⚙ Settings.'); return; }
 
-  var raised_by      = v('raised_by').trim();
-  var raised_desig   = v('raised_desig').trim();
-  var month_name     = v('report_month_name');
-  var report_year    = v('report_year');
-  var sub_date       = v('submission_date');
-  var project_name   = v('project_name');
-  var subject_letter = document.getElementById('subject_letter').value.trim();
-  var submit_to      = v('submit_to');
-  var report_month   = (month_name && report_year) ? month_name + '-' + report_year : '';
+  const raised_by      = v('raised_by').trim();
+  const raised_desig   = v('raised_desig').trim();
+  const month_name     = v('report_month_name');
+  const report_year    = v('report_year');
+  const sub_date       = v('submission_date');
+  const project_name   = v('project_name');
+  const subject_letter = document.getElementById('subject_letter').value.trim();
+  const submit_to      = v('submit_to');
+  const report_month   = (month_name && report_year) ? month_name + '-' + report_year : '';
 
-  var miss = [];
+  const miss = [];
   if (!raised_by)      miss.push('Name');
   if (!raised_desig)   miss.push('Designation');
   if (!report_month)   miss.push('Report Month & Year');
   if (!sub_date)       miss.push('Submission Date');
   if (!project_name)   miss.push('Project Name');
   if (!subject_letter) miss.push('Subject of Letter');
-  if (!submit_to)      miss.push('Submit To (complete selection)');
+  if (!submit_to)      miss.push('Submit To');
   if (miss.length) { showError('Please fill: ' + miss.join(', ')); return; }
 
-  var btn = document.getElementById('submit-btn');
-  btn.disabled = true;
-  btn.innerHTML = '<span class="spinner"></span>Generating…';
-
+  const btn = document.getElementById('submit-btn');
+  btn.disabled = true; btn.innerHTML = '<span class="spinner"></span>Generating…';
   try {
-    var params = new URLSearchParams({
-      action: 'generateDispatch',
-      raised_by: raised_by,
-      raised_designation: raised_desig,
-      report_month: report_month,
-      submission_date: sub_date,
-      project_name: project_name,
-      subject_letter: subject_letter,
-      submit_to: submit_to,
-      fy: FY,
-      location: LOC
-    });
-    var res  = await fetch(SCRIPT_URL + '?' + params.toString());
-    var data = await res.json();
+    const params = new URLSearchParams({ action:'generateDispatch', raised_by, raised_designation:raised_desig, report_month, submission_date:sub_date, project_name, subject_letter, submit_to, fy:FY, location:LOC });
+    const res  = await fetch(SCRIPT_URL + '?' + params.toString());
+    const data = await res.json();
     if (data.status === 'ok') {
       showResult(data.dispatch_no, data.saved_at, report_month, subject_letter, submit_to, raised_by, raised_desig);
-    } else {
-      showError('Server error: ' + (data.message || 'Unknown'));
-    }
-  } catch(err) {
-    showError('Network error. (' + err.message + ')');
-  }
-  btn.disabled = false;
-  btn.innerHTML = 'Generate Dispatch Number →';
+    } else { showError('Server error: ' + (data.message || 'Unknown')); }
+  } catch(err) { showError('Network error. (' + err.message + ')'); }
+  btn.disabled = false; btn.innerHTML = 'Generate Dispatch Number →';
 });
 
-// ═══════════════════════════════════
+// ════════════════════════════════════
 // RESULT
-// ═══════════════════════════════════
-var _lastNo = '', _lastMeta = {};
-
+// ════════════════════════════════════
+let _lastNo = '', _lastMeta = {};
 function showResult(no, savedAt, month, subject, to, by, desig) {
-  _lastNo = no;
-  _lastMeta = { month: month, subject: subject, to: to, by: by, desig: desig, savedAt: savedAt };
+  _lastNo = no; _lastMeta = { month, subject, to, by, desig, savedAt };
   document.getElementById('dispatch-display').textContent = no;
-  var shortS = subject.length > 80 ? subject.substring(0, 80) + '…' : subject;
+  const shortS = subject.length > 80 ? subject.substring(0,80)+'…' : subject;
   document.getElementById('dispatch-meta').innerHTML =
     '<b>Month:</b> ' + month + ' &nbsp;·&nbsp; <b>By:</b> ' + by + ' (' + desig + ')<br>' +
-    '<b>Subject:</b> ' + shortS + '<br>' +
-    '<b>To:</b> ' + to + '<br>' +
+    '<b>Subject:</b> ' + shortS + '<br><b>To:</b> ' + to + '<br>' +
     '<span style="font-size:11px">Saved: ' + savedAt + '</span>';
-  if (DEF_WA) document.getElementById('wa-number').value = DEF_WA;
   document.getElementById('result-box').style.display = 'block';
   document.getElementById('dispatch-form').style.display = 'none';
-  window.scrollTo({ top: 0, behavior: 'smooth' });
+  window.scrollTo({ top:0, behavior:'smooth' });
 }
 
 function copyDispatch() {
-  navigator.clipboard.writeText(_lastNo).then(function() {
-    var b = document.querySelector('.rbtn-copy');
+  navigator.clipboard.writeText(_lastNo).then(() => {
+    const b = document.querySelector('.rbtn-copy');
     b.textContent = '✅ Copied!';
-    setTimeout(function() { b.textContent = '📋 Copy'; }, 2000);
+    setTimeout(() => b.textContent = '📋 Copy', 2000);
   });
-}
-
-function shareWhatsApp() {
-  var waNum = document.getElementById('wa-number').value.trim().replace(/\D/g, '');
-  var msg = encodeURIComponent(
-    '*Dispatch Number Generated*\n\n' +
-    '📋 *' + _lastNo + '*\n\n' +
-    '📅 Month: ' + _lastMeta.month + '\n' +
-    '📝 Subject: ' + _lastMeta.subject + '\n' +
-    '📤 To: ' + _lastMeta.to + '\n' +
-    '👤 By: ' + _lastMeta.by + ' (' + _lastMeta.desig + ')\n\n' +
-    '_SAI Computers Ltd. · DVVNL AGRA_'
-  );
-  window.open(waNum ? 'https://wa.me/' + waNum + '?text=' + msg : 'https://wa.me/?text=' + msg, '_blank');
 }
 
 function resetForm() {
@@ -908,10 +914,9 @@ function resetForm() {
   document.getElementById('dispatch-form').style.display = 'block';
   document.getElementById('dispatch-form').reset();
   document.querySelectorAll('.radio-item').forEach(r => r.classList.remove('selected'));
-  document.getElementById('project_name').value = '';
-  document.getElementById('submit_to').value = '';
+  ['project_name','submit_to'].forEach(id => document.getElementById(id).value = '');
   document.getElementById('submit-trail').textContent = 'Select level above to choose recipient';
-  document.querySelectorAll('.reveal-box').forEach(el => { el.classList.remove('show'); el.value = ''; });
+  document.querySelectorAll('.reveal-box').forEach(el => { el.classList.remove('show'); el.value=''; });
   document.getElementById('file-preview').style.display = 'none';
   document.getElementById('upload-status').style.display = 'none';
   _formFile = null; _lastNo = '';
@@ -919,189 +924,156 @@ function resetForm() {
   document.getElementById('submission_date').value = new Date().toISOString().split('T')[0];
 }
 
-// ═══════════════════════════════════
-// UPLOAD (form result)
-// ═══════════════════════════════════
-var _formFile = null;
+// ════════════════════════════════════
+// UPLOAD — POST method (fixes size issue)
+// ════════════════════════════════════
+let _formFile = null;
 
 function previewFile(input) {
-  var file = input.files[0]; if (!file) return;
-  if (file.size > 10 * 1024 * 1024) { showUploadStatus('error', 'File too large (max 10MB)'); return; }
+  const file = input.files[0]; if (!file) return;
+  if (file.size > 10*1024*1024) { showUploadStatus('error','File too large (max 10MB)'); return; }
   _formFile = file;
-  document.getElementById('preview-name').textContent = '📎 ' + file.name + ' (' + (file.size / 1024).toFixed(1) + ' KB)';
-  var img = document.getElementById('preview-img');
+  document.getElementById('preview-name').textContent = '📎 ' + file.name + ' (' + (file.size/1024).toFixed(1) + ' KB)';
+  const img = document.getElementById('preview-img');
   if (file.type.startsWith('image/')) {
-    var r = new FileReader(); r.onload = function(e) { img.src = e.target.result; img.style.display = 'block'; }; r.readAsDataURL(file);
+    const r = new FileReader(); r.onload = e => { img.src = e.target.result; img.style.display='block'; }; r.readAsDataURL(file);
   } else { img.style.display = 'none'; }
   document.getElementById('file-preview').style.display = 'block';
 }
 
-var dz = document.getElementById('drop-zone');
-dz.addEventListener('dragover', function(e) { e.preventDefault(); dz.classList.add('dragover'); });
-dz.addEventListener('dragleave', function() { dz.classList.remove('dragover'); });
-dz.addEventListener('drop', function(e) {
+const dz = document.getElementById('drop-zone');
+dz.addEventListener('dragover', e => { e.preventDefault(); dz.classList.add('dragover'); });
+dz.addEventListener('dragleave', () => dz.classList.remove('dragover'));
+dz.addEventListener('drop', e => {
   e.preventDefault(); dz.classList.remove('dragover');
-  var f = e.dataTransfer.files[0];
-  if (f) { var dt = new DataTransfer(); dt.items.add(f); document.getElementById('file-input').files = dt.files; previewFile(document.getElementById('file-input')); }
+  const f = e.dataTransfer.files[0];
+  if (f) { const dt = new DataTransfer(); dt.items.add(f); document.getElementById('file-input').files = dt.files; previewFile(document.getElementById('file-input')); }
 });
 
 async function uploadAndSend() {
-  if (!_formFile) { showUploadStatus('error', 'Please select a file.'); return; }
-  if (!SCRIPT_URL) { showUploadStatus('error', 'Apps Script URL not configured.'); return; }
-  var btn = document.getElementById('upload-btn');
+  if (!_formFile) { showUploadStatus('error','Please select a file.'); return; }
+  if (!SCRIPT_URL) { showUploadStatus('error','Apps Script URL not configured.'); return; }
+  const btn = document.getElementById('upload-btn');
   btn.disabled = true; btn.textContent = 'Uploading…';
   try {
-    var b64 = await fileToBase64(_formFile);
-    var params = new URLSearchParams({ action: 'uploadFile', dispatch_no: _lastNo, filename: _formFile.name, mime: _formFile.type, data: b64 });
-    var res  = await fetch(SCRIPT_URL + '?' + params.toString());
-    var data = await res.json();
+    const b64 = await fileToBase64(_formFile);
+    const res = await fetch(SCRIPT_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action:'uploadFile', dispatch_no:_lastNo, filename:_formFile.name, mime:_formFile.type, data:b64 })
+    });
+    const data = await res.json();
     if (data.status === 'ok') {
       showUploadStatus('ok', '✅ Uploaded! <a href="' + data.url + '" target="_blank" style="color:var(--cyan)">View File</a>');
-      var waNum = document.getElementById('wa-number').value.trim().replace(/\D/g, '');
-      if (waNum && data.url) {
-        var msg = encodeURIComponent('*Office Copy Uploaded*\n\n📋 Dispatch: *' + _lastNo + '*\n📎 File: ' + data.url + '\n\n_SAI Computers Ltd. · DVVNL AGRA_');
-        setTimeout(function() { window.open('https://wa.me/' + waNum + '?text=' + msg, '_blank'); }, 500);
-      }
-    } else { showUploadStatus('error', 'Upload failed: ' + (data.message || 'Unknown')); }
-  } catch(e) { showUploadStatus('error', 'Error: ' + e.message); }
-  btn.disabled = false; btn.textContent = 'Upload & Send';
+    } else { showUploadStatus('error','Upload failed: ' + (data.message||'Unknown')); }
+  } catch(e) { showUploadStatus('error','Error: ' + e.message); }
+  btn.disabled = false; btn.textContent = '📎 Upload Office Copy';
 }
 
 function showUploadStatus(type, msg) {
-  var el = document.getElementById('upload-status');
-  el.style.display = 'block';
-  el.style.color = type === 'ok' ? 'var(--success)' : 'var(--error)';
-  el.innerHTML = msg;
+  const el = document.getElementById('upload-status');
+  el.style.display = 'block'; el.style.color = type==='ok' ? 'var(--success)' : 'var(--error)'; el.innerHTML = msg;
 }
 
-// ═══════════════════════════════════
+// ════════════════════════════════════
 // DASHBOARD
-// ═══════════════════════════════════
-var allRows = [], sortKey = 'dispatch_no_', sortAsc = false;
+// ════════════════════════════════════
+let allRows = [], sortKey = 'dispatch_no_', sortAsc = false;
 
 async function loadDashboard() {
-  if (!SCRIPT_URL) { showTableMsg('⚙ Apps Script URL not configured. Click ⚙ Settings in top-right.'); return; }
+  if (!SCRIPT_URL) { showTableMsg('⚙ Apps Script URL not configured. Click ⚙ Settings.'); return; }
   showLoader(true);
   try {
-    var res  = await fetch(SCRIPT_URL + '?action=getAll');
-    var data = await res.json();
+    const res  = await fetch(SCRIPT_URL + '?action=getAll');
+    const data = await res.json();
     if (data.status === 'ok') {
       allRows = (data.rows || []).reverse();
-      populateMonthFilter();
-      updateStats();
-      applyFilters();
-    } else { showTableMsg('Error: ' + (data.message || 'Unknown')); }
-  } catch(e) { showTableMsg('⚠ Could not connect. Check Apps Script URL in ⚙ Settings.'); }
+      populateMonthFilter(); updateStats(); applyFilters();
+    } else { showTableMsg('Error: ' + (data.message||'Unknown')); }
+  } catch(e) { showTableMsg('⚠ Could not connect. Check Apps Script URL.'); }
   showLoader(false);
 }
 
 function updateStats() {
-  var total    = allRows.length;
-  var uploaded = allRows.filter(function(r) { return gf(r, 'file_url').startsWith('http'); }).length;
-  var pending  = total - uploaded;
-  var pct      = total ? Math.round(uploaded / total * 100) : 0;
-
-  var todayArr = new Date().toLocaleDateString('en-IN', { day:'2-digit', month:'2-digit', year:'numeric' }).split('/');
-  var todayStr = todayArr[0] + '-' + todayArr[1] + '-' + todayArr[2];
-  var todayCount = allRows.filter(function(r) { return String(gf(r, 'saved_at')).startsWith(todayStr); }).length;
-
+  const total    = allRows.length;
+  const uploaded = allRows.filter(r => gf(r,'file_url').startsWith('http')).length;
+  const pending  = total - uploaded;
+  const pct      = total ? Math.round(uploaded/total*100) : 0;
+  const now      = new Date();
+  const todayStr = String(now.getDate()).padStart(2,'0') + '-' + String(now.getMonth()+1).padStart(2,'0') + '-' + now.getFullYear();
+  const todayCount = allRows.filter(r => String(gf(r,'saved_at')).startsWith(todayStr)).length;
   document.getElementById('stat-total').textContent    = total;
   document.getElementById('stat-uploaded').textContent = uploaded;
   document.getElementById('stat-pending').textContent  = pending;
   document.getElementById('stat-today').textContent    = todayCount;
-  document.getElementById('stat-pct').textContent      = total ? pct + '% complete' : '—';
-  document.getElementById('progress-fill').style.width = pct + '%';
-  document.getElementById('stat-today-date').textContent = new Date().toLocaleDateString('en-IN', { day:'2-digit', month:'short', year:'numeric' });
+  document.getElementById('stat-pct').textContent      = total ? pct+'% complete' : '—';
+  document.getElementById('progress-fill').style.width = pct+'%';
+  document.getElementById('stat-today-date').textContent = now.toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'});
 }
 
 function populateMonthFilter() {
-  var months = [...new Set(allRows.map(function(r) { return gf(r, 'report_month'); }).filter(Boolean))].sort();
-  document.getElementById('filter-month').innerHTML = '<option value="">All Months</option>' + months.map(function(m) { return '<option>' + m + '</option>'; }).join('');
+  const months = [...new Set(allRows.map(r => gf(r,'report_month')).filter(Boolean))].sort();
+  document.getElementById('filter-month').innerHTML = '<option value="">All Months</option>' + months.map(m=>'<option>'+m+'</option>').join('');
 }
 
 function applyFilters() {
-  var search  = document.getElementById('search-input').value.toLowerCase();
-  var status  = document.getElementById('filter-status').value;
-  var project = document.getElementById('filter-project').value;
-  var month   = document.getElementById('filter-month').value;
-
-  var rows = allRows.filter(function(r) {
-    var no      = gf(r, 'dispatch_no_').toLowerCase();
-    var subj    = gf(r, 'subject_of_letter').toLowerCase();
-    var by      = gf(r, 'raised_by').toLowerCase();
-    var to      = gf(r, 'submit_to').toLowerCase();
-    var hasFile = gf(r, 'file_url').startsWith('http');
-    if (search  && !no.includes(search) && !subj.includes(search) && !by.includes(search) && !to.includes(search)) return false;
-    if (status === 'uploaded' && !hasFile) return false;
-    if (status === 'pending'  && hasFile)  return false;
-    if (project && !gf(r, 'project_name').toUpperCase().includes(project)) return false;
-    if (month   && gf(r, 'report_month') !== month) return false;
+  const search  = document.getElementById('search-input').value.toLowerCase();
+  const status  = document.getElementById('filter-status').value;
+  const project = document.getElementById('filter-project').value;
+  const month   = document.getElementById('filter-month').value;
+  let rows = allRows.filter(r => {
+    const no   = gf(r,'dispatch_no_').toLowerCase();
+    const subj = gf(r,'subject_of_letter').toLowerCase();
+    const by   = gf(r,'raised_by').toLowerCase();
+    const to   = gf(r,'submit_to').toLowerCase();
+    const hasFile = gf(r,'file_url').startsWith('http');
+    if (search && !no.includes(search) && !subj.includes(search) && !by.includes(search) && !to.includes(search)) return false;
+    if (status==='uploaded' && !hasFile) return false;
+    if (status==='pending'  && hasFile)  return false;
+    if (project && !gf(r,'project_name').toUpperCase().includes(project)) return false;
+    if (month   && gf(r,'report_month') !== month) return false;
     return true;
   });
-
-  rows.sort(function(a, b) {
-    var av = gf(a, sortKey), bv = gf(b, sortKey);
-    return sortAsc ? av.localeCompare(bv) : bv.localeCompare(av);
-  });
+  rows.sort((a,b) => { const av=gf(a,sortKey), bv=gf(b,sortKey); return sortAsc ? av.localeCompare(bv) : bv.localeCompare(av); });
   renderTable(rows);
 }
 
-function sortBy(key) {
-  if (sortKey === key) sortAsc = !sortAsc; else { sortKey = key; sortAsc = false; }
-  applyFilters();
-}
+function sortBy(key) { sortKey===key ? sortAsc=!sortAsc : (sortKey=key, sortAsc=false); applyFilters(); }
 
-// gf = getField — tries multiple key formats
 function gf(r, key) {
   if (r[key] !== undefined) return String(r[key]);
-  var keys = Object.keys(r);
-  var clean = key.replace(/_+$/,'');
-  var found = keys.find(function(k) { return k.replace(/[\s._\-]+/g,'').toLowerCase() === clean.replace(/_/g,'').toLowerCase(); });
+  const clean = key.replace(/_+$/,'');
+  const found = Object.keys(r).find(k => k.replace(/[\s._\-]+/g,'').toLowerCase() === clean.replace(/_/g,'').toLowerCase());
   return found ? String(r[found]) : '';
 }
 
 function renderTable(rows) {
-  var tbody = document.getElementById('table-body');
-  if (!rows.length) {
-    tbody.innerHTML = '<tr><td colspan="8"><div class="empty-state"><div class="icon">📭</div><p>No records found</p></div></td></tr>';
-    return;
-  }
-  tbody.innerHTML = rows.map(function(r) {
-    var no      = gf(r, 'dispatch_no_') || '—';
-    var date    = gf(r, 'submission_date') || '—';
-    var month   = gf(r, 'report_month')   || '—';
-    var by      = gf(r, 'raised_by')      || '—';
-    var desig   = gf(r, 'designation')    || '';
-    var subj    = gf(r, 'subject_of_letter') || '—';
-    var to      = gf(r, 'submit_to')      || '—';
-    var fileUrl = gf(r, 'file_url');
-    var hasFile = fileUrl.startsWith('http');
-    var badge   = hasFile
-      ? '<span class="badge badge-ok">✅ Uploaded</span>'
-      : '<span class="badge badge-pending">⚠ Pending</span>';
-    var action  = hasFile
-      ? '<a href="' + fileUrl + '" target="_blank" class="view-link">📄 View</a>'
-      : '<button class="btn-upload-inline" onclick="openUploadModal(\'' + esc(no) + '\')">📎 Upload</button>';
-    var shortS  = subj.length > 50 ? subj.substring(0, 50) + '…' : subj;
-    var shortT  = to.length  > 32 ? to.substring(0, 32) + '…' : to;
-    return '<tr>' +
-      '<td><span class="mono">' + no + '</span></td>' +
-      '<td style="font-size:12px;color:var(--muted)">' + date + '</td>' +
-      '<td style="font-size:12px">' + month + '</td>' +
-      '<td style="font-size:12px">' + by + (desig ? '<br><span style="font-size:11px;color:var(--muted)">' + desig + '</span>' : '') + '</td>' +
-      '<td><div class="subj-cell" title="' + esc(subj) + '">' + shortS + '</div></td>' +
-      '<td style="font-size:11px;color:var(--muted)" title="' + esc(to) + '">' + shortT + '</td>' +
-      '<td>' + badge + '</td>' +
-      '<td>' + action + '</td>' +
-      '</tr>';
+  const tbody = document.getElementById('table-body');
+  if (!rows.length) { tbody.innerHTML='<tr><td colspan="8"><div class="empty-state"><div class="icon">📭</div><p>No records found</p></div></td></tr>'; return; }
+  tbody.innerHTML = rows.map(r => {
+    const no      = gf(r,'dispatch_no_') || '—';
+    const date    = gf(r,'submission_date') || '—';
+    const month   = gf(r,'report_month')   || '—';
+    const by      = gf(r,'raised_by')      || '—';
+    const desig   = gf(r,'designation')    || '';
+    const subj    = gf(r,'subject_of_letter') || '—';
+    const to      = gf(r,'submit_to')      || '—';
+    const fileUrl = gf(r,'file_url');
+    const hasFile = fileUrl.startsWith('http');
+    const badge  = hasFile ? '<span class="badge badge-ok">✅ Uploaded</span>' : '<span class="badge badge-pending">⚠ Pending</span>';
+    const action = hasFile ? '<a href="'+fileUrl+'" target="_blank" class="view-link">📄 View</a>' : '<button class="btn-upload-inline" onclick="openUploadModal(\''+esc(no)+'\')">📎 Upload</button>';
+    return '<tr><td><span class="mono">'+no+'</span></td><td style="font-size:12px;color:var(--muted)">'+date+'</td><td style="font-size:12px">'+month+'</td>' +
+      '<td style="font-size:12px">'+by+(desig?'<br><span style="font-size:11px;color:var(--muted)">'+desig+'</span>':'')+'</td>' +
+      '<td><div class="subj-cell" title="'+esc(subj)+'">'+(subj.length>50?subj.substring(0,50)+'…':subj)+'</div></td>' +
+      '<td style="font-size:11px;color:var(--muted)" title="'+esc(to)+'">'+(to.length>32?to.substring(0,32)+'…':to)+'</td>' +
+      '<td>'+badge+'</td><td>'+action+'</td></tr>';
   }).join('');
 }
 
-// ═══════════════════════════════════
-// UPLOAD MODAL (Dashboard)
-// ═══════════════════════════════════
-var _modalDispatchNo = '', _modalFile = null;
-
+// ════════════════════════════════════
+// UPLOAD MODAL (Dashboard) — POST
+// ════════════════════════════════════
+let _modalDispatchNo = '', _modalFile = null;
 function openUploadModal(no) {
   _modalDispatchNo = no; _modalFile = null;
   document.getElementById('modal-dispatch-no').textContent = no;
@@ -1110,114 +1082,82 @@ function openUploadModal(no) {
   document.getElementById('modal-preview-name').textContent = '';
   document.getElementById('modal-status').style.display = 'none';
   document.getElementById('modal-file-input').value = '';
-  document.getElementById('modal-wa').value = DEF_WA || '';
-  var btn = document.getElementById('modal-save-btn');
+  const btn = document.getElementById('modal-save-btn');
   btn.disabled = false; btn.textContent = 'Upload';
   document.getElementById('upload-modal').classList.add('open');
 }
 function closeUploadModal() { document.getElementById('upload-modal').classList.remove('open'); }
 
-var mdrop = document.getElementById('modal-drop');
-mdrop.addEventListener('dragover', function(e) { e.preventDefault(); mdrop.classList.add('dragover'); });
-mdrop.addEventListener('dragleave', function() { mdrop.classList.remove('dragover'); });
-mdrop.addEventListener('drop', function(e) {
+const mdrop = document.getElementById('modal-drop');
+mdrop.addEventListener('dragover', e => { e.preventDefault(); mdrop.classList.add('dragover'); });
+mdrop.addEventListener('dragleave', () => mdrop.classList.remove('dragover'));
+mdrop.addEventListener('drop', e => {
   e.preventDefault(); mdrop.classList.remove('dragover');
-  var f = e.dataTransfer.files[0];
-  if (f) { var dt = new DataTransfer(); dt.items.add(f); document.getElementById('modal-file-input').files = dt.files; modalPreviewFile(document.getElementById('modal-file-input')); }
+  const f = e.dataTransfer.files[0];
+  if (f) { const dt = new DataTransfer(); dt.items.add(f); document.getElementById('modal-file-input').files = dt.files; modalPreviewFile(document.getElementById('modal-file-input')); }
 });
 
 function modalPreviewFile(input) {
-  var file = input.files[0]; if (!file) return;
-  if (file.size > 10 * 1024 * 1024) { showModalStatus('error', 'File too large (max 10MB)'); return; }
+  const file = input.files[0]; if (!file) return;
+  if (file.size > 10*1024*1024) { showModalStatus('error','File too large'); return; }
   _modalFile = file;
-  document.getElementById('modal-preview-name').textContent = '📎 ' + file.name + ' (' + (file.size/1024).toFixed(1) + ' KB)';
-  var img = document.getElementById('modal-preview-img');
-  if (file.type.startsWith('image/')) {
-    var r = new FileReader(); r.onload = function(e) { img.src = e.target.result; img.style.display = 'block'; }; r.readAsDataURL(file);
-  } else { img.style.display = 'none'; }
+  document.getElementById('modal-preview-name').textContent = '📎 '+file.name+' ('+(file.size/1024).toFixed(1)+' KB)';
+  const img = document.getElementById('modal-preview-img');
+  if (file.type.startsWith('image/')) { const r=new FileReader(); r.onload=e=>{img.src=e.target.result;img.style.display='block';}; r.readAsDataURL(file); }
+  else { img.style.display='none'; }
   document.getElementById('modal-preview').style.display = 'block';
 }
 
 async function doUpload() {
-  if (!_modalFile) { showModalStatus('error', 'Please select a file first.'); return; }
-  if (!SCRIPT_URL) { showModalStatus('error', 'Apps Script URL not configured.'); return; }
-  var btn = document.getElementById('modal-save-btn');
+  if (!_modalFile) { showModalStatus('error','Please select a file first.'); return; }
+  if (!SCRIPT_URL) { showModalStatus('error','Apps Script URL not configured.'); return; }
+  const btn = document.getElementById('modal-save-btn');
   btn.disabled = true; btn.textContent = 'Uploading…';
   try {
-    var b64 = await fileToBase64(_modalFile);
-    var params = new URLSearchParams({ action: 'uploadFile', dispatch_no: _modalDispatchNo, filename: _modalFile.name, mime: _modalFile.type, data: b64 });
-    var res  = await fetch(SCRIPT_URL + '?' + params.toString());
-    var data = await res.json();
+    const b64 = await fileToBase64(_modalFile);
+    const res = await fetch(SCRIPT_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action:'uploadFile', dispatch_no:_modalDispatchNo, filename:_modalFile.name, mime:_modalFile.type, data:b64 })
+    });
+    const data = await res.json();
     if (data.status === 'ok') {
-      showModalStatus('ok', '✅ Uploaded! <a href="' + data.url + '" target="_blank" style="color:var(--cyan)">View File</a>');
+      showModalStatus('ok','✅ Uploaded! <a href="'+data.url+'" target="_blank" style="color:var(--cyan)">View File</a>');
       btn.textContent = 'Done ✓';
-      var idx = allRows.findIndex(function(r) { return gf(r, 'dispatch_no_') === _modalDispatchNo; });
-      if (idx >= 0) { allRows[idx].file_url = data.url; }
+      const idx = allRows.findIndex(r => gf(r,'dispatch_no_') === _modalDispatchNo);
+      if (idx >= 0) allRows[idx].file_url = data.url;
       updateStats(); applyFilters();
-      var waNum = document.getElementById('modal-wa').value.trim().replace(/\D/g, '');
-      if (waNum && data.url) {
-        var msg = encodeURIComponent('*Office Copy Uploaded*\n\n📋 Dispatch: *' + _modalDispatchNo + '*\n📎 File: ' + data.url + '\n\n_SAI Computers Ltd. · DVVNL AGRA_');
-        setTimeout(function() { window.open('https://wa.me/' + waNum + '?text=' + msg, '_blank'); }, 600);
-      }
-    } else { showModalStatus('error', 'Failed: ' + (data.message || 'Unknown')); btn.disabled = false; btn.textContent = 'Upload'; }
-  } catch(e) { showModalStatus('error', 'Error: ' + e.message); btn.disabled = false; btn.textContent = 'Upload'; }
+    } else { showModalStatus('error','Failed: '+(data.message||'Unknown')); btn.disabled=false; btn.textContent='Upload'; }
+  } catch(e) { showModalStatus('error','Error: '+e.message); btn.disabled=false; btn.textContent='Upload'; }
 }
 
-function showModalStatus(type, msg) {
-  var el = document.getElementById('modal-status');
-  el.style.display = 'block';
-  el.style.color = type === 'ok' ? 'var(--success)' : 'var(--error)';
-  el.innerHTML = msg;
-}
+function showModalStatus(type, msg) { const el=document.getElementById('modal-status'); el.style.display='block'; el.style.color=type==='ok'?'var(--success)':'var(--error)'; el.innerHTML=msg; }
 
-// ═══════════════════════════════════
+// ════════════════════════════════════
 // CONFIG MODAL
-// ═══════════════════════════════════
-function openConfig() {
-  document.getElementById('cfg-url').value = SCRIPT_URL;
-  document.getElementById('cfg-fy').value  = FY;
-  document.getElementById('cfg-loc').value = LOC;
-  document.getElementById('cfg-wa').value  = DEF_WA;
-  document.getElementById('config-modal').classList.add('open');
-}
+// ════════════════════════════════════
+function openConfig() { document.getElementById('cfg-url').value=SCRIPT_URL; document.getElementById('cfg-fy').value=FY; document.getElementById('cfg-loc').value=LOC; document.getElementById('config-modal').classList.add('open'); }
 function closeConfig() { document.getElementById('config-modal').classList.remove('open'); }
 function saveConfig() {
   SCRIPT_URL = document.getElementById('cfg-url').value.trim();
-  FY         = document.getElementById('cfg-fy').value.trim()  || '2026-2027';
-  LOC        = document.getElementById('cfg-loc').value.trim() || 'AGRA';
-  DEF_WA     = document.getElementById('cfg-wa').value.trim().replace(/\D/g, '');
+  FY  = document.getElementById('cfg-fy').value.trim()  || '2026-2027';
+  LOC = document.getElementById('cfg-loc').value.trim() || 'AGRA';
   localStorage.setItem('dispatch_script_url', SCRIPT_URL);
-  localStorage.setItem('dispatch_fy',  FY);
+  localStorage.setItem('dispatch_fy', FY);
   localStorage.setItem('dispatch_loc', LOC);
-  localStorage.setItem('dispatch_wa',  DEF_WA);
   closeConfig();
 }
 
-// ═══════════════════════════════════
+// ════════════════════════════════════
 // HELPERS
-// ═══════════════════════════════════
+// ════════════════════════════════════
 function v(id) { return document.getElementById(id).value; }
 function esc(s) { return String(s).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
-function fileToBase64(file) {
-  return new Promise(function(res, rej) {
-    var r = new FileReader();
-    r.onload = function() { res(r.result.split(',')[1]); };
-    r.onerror = function() { rej(new Error('Read failed')); };
-    r.readAsDataURL(file);
-  });
-}
-function showLoader(val) { document.getElementById('loader').classList.toggle('show', val); }
-function showTableMsg(msg) { document.getElementById('table-body').innerHTML = '<tr><td colspan="8"><div class="empty-state"><div class="icon">⚠</div><p>' + msg + '</p></div></td></tr>'; }
-function showError(msg) { var b = document.getElementById('error-box'); b.textContent = '⚠ ' + msg; b.style.display = 'block'; b.scrollIntoView({ behavior: 'smooth' }); }
-function hideError() { document.getElementById('error-box').style.display = 'none'; }
-
-// ═══════════════════════════════════
-// INIT
-// ═══════════════════════════════════
-document.getElementById('submission_date').value = new Date().toISOString().split('T')[0];
-var MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
-document.getElementById('report_month_name').value = MONTHS[new Date().getMonth()];
-document.getElementById('report_year').value = String(new Date().getFullYear());
+function fileToBase64(file) { return new Promise((res,rej)=>{ const r=new FileReader(); r.onload=()=>res(r.result.split(',')[1]); r.onerror=()=>rej(new Error('Read failed')); r.readAsDataURL(file); }); }
+function showLoader(val) { document.getElementById('loader').classList.toggle('show',val); }
+function showTableMsg(msg) { document.getElementById('table-body').innerHTML='<tr><td colspan="8"><div class="empty-state"><div class="icon">⚠</div><p>'+msg+'</p></div></td></tr>'; }
+function showError(msg) { const b=document.getElementById('error-box'); b.textContent='⚠ '+msg; b.style.display='block'; b.scrollIntoView({behavior:'smooth'}); }
+function hideError() { document.getElementById('error-box').style.display='none'; }
 </script>
 </body>
 </html>
