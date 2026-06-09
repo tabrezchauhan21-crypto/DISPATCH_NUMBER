@@ -228,12 +228,8 @@ footer{text-align:center;color:var(--muted);font-size:11px;padding:13px;border-t
     </div>
     <h2>Staff Login</h2>
     <div class="login-field">
-      <label>Username</label>
-      <input type="text" id="login-user" placeholder="Enter username" autocomplete="off"/>
-    </div>
-    <div class="login-field">
       <label>Password</label>
-      <input type="password" id="login-pass" placeholder="Enter password" onkeydown="if(event.key==='Enter')doLogin()"/>
+      <input type="password" id="login-pass" placeholder="Enter password to continue" onkeydown="if(event.key==='Enter')doLogin()"/>
     </div>
     <button class="btn-login" onclick="doLogin()">Login →</button>
     <div id="login-error">❌ Invalid username or password</div>
@@ -250,7 +246,6 @@ footer{text-align:center;color:var(--muted);font-size:11px;padding:13px;border-t
   </div>
   <div class="header-right">
     <span class="header-badge">DISPATCH PORTAL v3.0</span>
-    <span class="cfg-link" onclick="openConfig()">⚙ Settings</span>
     <span class="logout-btn" onclick="doLogout()">Logout</span>
   </div>
 </header>
@@ -605,22 +600,6 @@ footer{text-align:center;color:var(--muted);font-size:11px;padding:13px;border-t
   </div>
 </div>
 
-<!-- Config Modal -->
-<div class="modal-overlay" id="config-modal">
-  <div class="cfg-card">
-    <h3>⚙ Configuration</h3>
-    <label>Apps Script Web App URL <span style="color:var(--error)">*</span></label>
-    <input type="text" id="cfg-url" placeholder="https://script.google.com/macros/s/…/exec"/>
-    <label>Financial Year</label>
-    <input type="text" id="cfg-fy" placeholder="2026-2027"/>
-    <label>Location Code</label>
-    <input type="text" id="cfg-loc" placeholder="AGRA"/>
-    <div class="cfg-actions">
-      <button class="btn-cfg-save" onclick="saveConfig()">Save</button>
-      <button class="btn-cfg-cancel" onclick="closeConfig()">Cancel</button>
-    </div>
-  </div>
-</div>
 
 <div id="loader"><div class="spinner-lg"></div><div style="font-size:13px;color:var(--muted)">Loading…</div></div>
 
@@ -630,13 +609,12 @@ footer{text-align:center;color:var(--muted);font-size:11px;padding:13px;border-t
 // ════════════════════════════════════
 // LOGIN
 // ════════════════════════════════════
-const USERS = { 'SAI STAFF': 'SAI123' };
+
 
 function doLogin() {
-  var user = document.getElementById('login-user').value.trim().toUpperCase();
   var pass = document.getElementById('login-pass').value;
   var err  = document.getElementById('login-error');
-  if (USERS[user] && USERS[user] === pass) {
+  if (pass === 'SAI123') {
     sessionStorage.setItem('dispatch_auth', '1');
     document.getElementById('login-screen').style.display = 'none';
     document.getElementById('main-app').style.display     = 'flex';
@@ -653,7 +631,7 @@ function doLogout() {
   sessionStorage.removeItem('dispatch_auth');
   document.getElementById('main-app').style.display    = 'none';
   document.getElementById('login-screen').style.display = 'flex';
-  document.getElementById('login-user').value = '';
+
   document.getElementById('login-pass').value = '';
 }
 
@@ -752,9 +730,10 @@ const HIER=[
 // ════════════════════════════════════
 // CONFIG
 // ════════════════════════════════════
-let SCRIPT_URL = localStorage.getItem('dispatch_script_url') || 'https://script.google.com/macros/s/AKfycbwQkp4fUwiLsyJdTC6KSG_WrF16YLzjM_n1j25I4ujaCsT1lPrJyvPQHMasBkJlEXjZNQ/exec';
-let FY         = localStorage.getItem('dispatch_fy')         || '2026-2027';
-let LOC        = localStorage.getItem('dispatch_loc')        || 'AGRA';
+// ── HARDCODED CONFIG — works on any device/system ──
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwQkp4fUwiLsyJdTC6KSG_WrF16YLzjM_n1j25I4ujaCsT1lPrJyvPQHMasBkJlEXjZNQ/exec';
+const FY         = '2026-2027';
+const LOC        = 'AGRA';
 
 function initApp() {
   document.getElementById('submission_date').value = new Date().toISOString().split('T')[0];
@@ -849,7 +828,7 @@ function fillSelect(id, items, ph) {
 // ════════════════════════════════════
 document.getElementById('dispatch-form').addEventListener('submit', async function(e) {
   e.preventDefault(); hideError();
-  if (!SCRIPT_URL) { showError('Apps Script URL not configured. Click ⚙ Settings.'); return; }
+  if (!SCRIPT_URL) { showError('Apps Script URL not configured.'); return; }
 
   const raised_by      = v('raised_by').trim();
   const raised_desig   = v('raised_desig').trim();
@@ -981,7 +960,7 @@ function showUploadStatus(type, msg) {
 let allRows = [], sortKey = 'dispatch_no_', sortAsc = false;
 
 async function loadDashboard() {
-  if (!SCRIPT_URL) { showTableMsg('⚙ Apps Script URL not configured. Click ⚙ Settings.'); return; }
+  if (!SCRIPT_URL) { showTableMsg('⚙ Apps Script URL not configured.'); return; }
   showLoader(true);
   try {
     const res  = await fetch(SCRIPT_URL + '?action=getAll');
@@ -1133,30 +1112,6 @@ async function doUpload() {
 
 function showModalStatus(type, msg) { const el=document.getElementById('modal-status'); el.style.display='block'; el.style.color=type==='ok'?'var(--success)':'var(--error)'; el.innerHTML=msg; }
 
-// ════════════════════════════════════
-// CONFIG MODAL
-// ════════════════════════════════════
-function openConfig() { document.getElementById('cfg-url').value=SCRIPT_URL; document.getElementById('cfg-fy').value=FY; document.getElementById('cfg-loc').value=LOC; document.getElementById('config-modal').classList.add('open'); }
-function closeConfig() { document.getElementById('config-modal').classList.remove('open'); }
-function saveConfig() {
-  SCRIPT_URL = document.getElementById('cfg-url').value.trim();
-  FY  = document.getElementById('cfg-fy').value.trim()  || '2026-2027';
-  LOC = document.getElementById('cfg-loc').value.trim() || 'AGRA';
-  localStorage.setItem('dispatch_script_url', SCRIPT_URL);
-  localStorage.setItem('dispatch_fy', FY);
-  localStorage.setItem('dispatch_loc', LOC);
-  closeConfig();
-}
-
-// ════════════════════════════════════
-// HELPERS
-// ════════════════════════════════════
-function v(id) { return document.getElementById(id).value; }
-function esc(s) { return String(s).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
-function fileToBase64(file) { return new Promise((res,rej)=>{ const r=new FileReader(); r.onload=()=>res(r.result.split(',')[1]); r.onerror=()=>rej(new Error('Read failed')); r.readAsDataURL(file); }); }
-function showLoader(val) { document.getElementById('loader').classList.toggle('show',val); }
-function showTableMsg(msg) { document.getElementById('table-body').innerHTML='<tr><td colspan="8"><div class="empty-state"><div class="icon">⚠</div><p>'+msg+'</p></div></td></tr>'; }
-function showError(msg) { const b=document.getElementById('error-box'); b.textContent='⚠ '+msg; b.style.display='block'; b.scrollIntoView({behavior:'smooth'}); }
 function hideError() { document.getElementById('error-box').style.display='none'; }
 </script>
 </body>
