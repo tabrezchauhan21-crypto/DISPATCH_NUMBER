@@ -731,7 +731,7 @@ const HIER=[
 // CONFIG
 // ════════════════════════════════════
 // ── HARDCODED CONFIG — works on any device/system ──
-const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyqddoDeOt075luw7fvb4jj1FLXO6O5LoL40mw50TBFszVTfdxFxAcvQtoMMygvQIdERw/exec';
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbykc6R5FBG76D3o332lQalmu5vwHrOCxe0Dt-dbguFcNjdyQhI274bfQPknOw7LgMiI3w/exec';
 const FY         = '2026-2027';
 const LOC        = 'AGRA';
 
@@ -854,8 +854,7 @@ document.getElementById('dispatch-form').addEventListener('submit', async functi
   btn.disabled = true; btn.innerHTML = '<span class="spinner"></span>Generating…';
   try {
     const params = new URLSearchParams({ action:'generateDispatch', raised_by, raised_designation:raised_desig, report_month, submission_date:sub_date, project_name, subject_letter, submit_to, fy:FY, location:LOC });
-    const res  = await fetch(SCRIPT_URL + '?' + params.toString());
-    const data = await res.json();
+    const data = await jsonpFetch(SCRIPT_URL + '?' + params.toString());
     if (data.status === 'ok') {
       showResult(data.dispatch_no, data.saved_at, report_month, subject_letter, submit_to, raised_by, raised_desig);
     } else { showError('Server error: ' + (data.message || 'Unknown')); }
@@ -962,8 +961,7 @@ async function loadDashboard() {
   if (!SCRIPT_URL) { showTableMsg('⚙ Apps Script URL not configured.'); return; }
   showLoader(true);
   try {
-    const res  = await fetch(SCRIPT_URL + '?action=getAll');
-    const data = await res.json();
+    const data = await jsonpFetch(SCRIPT_URL + '?action=getAll');
     if (data.status === 'ok') {
       allRows = (data.rows || []).reverse();
       populateMonthFilter(); updateStats(); applyFilters();
@@ -1110,6 +1108,33 @@ async function doUpload() {
 
 function showModalStatus(type, msg) { const el=document.getElementById('modal-status'); el.style.display='block'; el.style.color=type==='ok'?'var(--success)':'var(--error)'; el.innerHTML=msg; }
 
+
+
+// ════════════════════════════════════
+// JSONP — bypasses CORS for GET requests
+// ════════════════════════════════════
+function jsonpFetch(url) {
+  return new Promise(function(resolve, reject) {
+    var cbName = 'cb_' + Date.now() + '_' + Math.random().toString(36).substr(2,5);
+    var script = document.createElement('script');
+    var timeout = setTimeout(function() {
+      cleanup();
+      reject(new Error('Request timeout'));
+    }, 15000);
+    function cleanup() {
+      clearTimeout(timeout);
+      delete window[cbName];
+      if (script.parentNode) script.parentNode.removeChild(script);
+    }
+    window[cbName] = function(data) {
+      cleanup();
+      resolve(data);
+    };
+    script.src = url + (url.indexOf('?') >= 0 ? '&' : '?') + 'callback=' + cbName;
+    script.onerror = function() { cleanup(); reject(new Error('Script load failed')); };
+    document.head.appendChild(script);
+  });
+}
 
 // ════════════════════════════════════
 // HELPERS
