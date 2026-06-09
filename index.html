@@ -938,7 +938,6 @@ async function uploadAndSend() {
     const b64 = await fileToBase64(_formFile);
     const res = await fetch(SCRIPT_URL, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ action:'uploadFile', dispatch_no:_lastNo, filename:_formFile.name, mime:_formFile.type, data:b64 })
     });
     const data = await res.json();
@@ -1096,7 +1095,6 @@ async function doUpload() {
     const b64 = await fileToBase64(_modalFile);
     const res = await fetch(SCRIPT_URL, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ action:'uploadFile', dispatch_no:_modalDispatchNo, filename:_modalFile.name, mime:_modalFile.type, data:b64 })
     });
     const data = await res.json();
