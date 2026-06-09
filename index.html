@@ -1112,6 +1112,16 @@ async function doUpload() {
 
 function showModalStatus(type, msg) { const el=document.getElementById('modal-status'); el.style.display='block'; el.style.color=type==='ok'?'var(--success)':'var(--error)'; el.innerHTML=msg; }
 
+
+// ════════════════════════════════════
+// HELPERS
+// ════════════════════════════════════
+function v(id) { return document.getElementById(id).value; }
+function esc(s) { return String(s).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function fileToBase64(file) { return new Promise((res,rej)=>{ const r=new FileReader(); r.onload=()=>res(r.result.split(',')[1]); r.onerror=()=>rej(new Error('Read failed')); r.readAsDataURL(file); }); }
+function showLoader(val) { document.getElementById('loader').classList.toggle('show',val); }
+function showTableMsg(msg) { document.getElementById('table-body').innerHTML='<tr><td colspan="8"><div class="empty-state"><div class="icon">⚠</div><p>'+msg+'</p></div></td></tr>'; }
+function showError(msg) { const b=document.getElementById('error-box'); b.textContent='⚠ '+msg; b.style.display='block'; b.scrollIntoView({behavior:'smooth'}); }
 function hideError() { document.getElementById('error-box').style.display='none'; }
 </script>
 </body>
