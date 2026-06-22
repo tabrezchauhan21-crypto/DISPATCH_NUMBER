@@ -709,11 +709,11 @@ function doLogin() {
   var pass = document.getElementById('login-pass').value;
   var err  = document.getElementById('login-error');
   if (pass === 'SAI123') {
-    sessionStorage.setItem('dispatch_auth', '1');
     document.getElementById('login-screen').style.display = 'none';
     document.getElementById('main-app').style.display     = 'flex';
     err.style.display = 'none';
     initApp();
+    logLoginEvent();
   } else {
     err.style.display = 'block';
     document.getElementById('login-pass').value = '';
@@ -721,21 +721,45 @@ function doLogin() {
   }
 }
 
+// ── Log login event with IP-based location + browser info ──
+function logLoginEvent() {
+  fetch('https://ip-api.com/json/?fields=status,country,regionName,city,query,isp')
+    .then(function(res) { return res.json(); })
+    .then(function(geo) {
+      const params = new URLSearchParams({
+        action: 'logLogin',
+        ip: geo.query || '',
+        city: geo.city || '',
+        region: geo.regionName || '',
+        country: geo.country || '',
+        isp: geo.isp || '',
+        user_agent: navigator.userAgent,
+        platform: navigator.platform || ''
+      });
+      jsonpFetch(SCRIPT_URL + '?' + params.toString()).catch(function(){});
+    })
+    .catch(function() {
+      // Geolocation failed — still log with browser info, no location
+      const params = new URLSearchParams({
+        action: 'logLogin',
+        ip: '', city: '', region: '', country: 'Unknown', isp: '',
+        user_agent: navigator.userAgent,
+        platform: navigator.platform || ''
+      });
+      jsonpFetch(SCRIPT_URL + '?' + params.toString()).catch(function(){});
+    });
+}
+
 function doLogout() {
-  sessionStorage.removeItem('dispatch_auth');
   document.getElementById('main-app').style.display    = 'none';
   document.getElementById('login-screen').style.display = 'flex';
-
   document.getElementById('login-pass').value = '';
 }
 
-// Auto-login check on page load
+// Page always starts at login screen — refresh logs user out automatically
 window.onload = function() {
-  if (sessionStorage.getItem('dispatch_auth') === '1') {
-    document.getElementById('login-screen').style.display = 'none';
-    document.getElementById('main-app').style.display     = 'flex';
-    initApp();
-  }
+  document.getElementById('login-screen').style.display = 'flex';
+  document.getElementById('main-app').style.display     = 'none';
 };
 
 // ════════════════════════════════════
