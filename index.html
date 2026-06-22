@@ -361,6 +361,7 @@ footer{text-align:center;color:var(--muted);font-size:11px;padding:13px;border-t
         <div class="lstep" data-level="test"          onclick="switchLevel('test')">Test</div>
         <div class="lstep" data-level="dist"          onclick="switchLevel('dist')">Distribution</div>
         <div class="lstep" data-level="sdo"           onclick="switchLevel('sdo')">SDO</div>
+        <div class="lstep" data-level="employee"      onclick="switchLevel('employee')">Employee</div>
       </div>
       <div class="submit-trail" id="submit-trail">Select level above to choose recipient</div>
       <input type="hidden" id="submit_to"/>
@@ -499,6 +500,99 @@ footer{text-align:center;color:var(--muted);font-size:11px;padding:13px;border-t
             <option>Other</option>
           </select>
           <input type="text" id="sdo_desig_other" class="reveal-box" placeholder="Type designation…" oninput="buildSubmitTo()"/>
+        </div>
+      </div>
+
+      <div class="submitto-pane" id="pane-employee">
+        <div class="field">
+          <label class="flabel">Designation <span class="req">*</span></label>
+          <select id="employee_desig" onchange="onEmployeeDesigChange()">
+            <option value="">— Select —</option>
+            <option>Zone Manager</option>
+            <option>Circle Manager</option>
+            <option>Supervisor</option>
+            <option>Meter Reader</option>
+          </select>
+        </div>
+
+        <!-- Zone Manager: only Zone -->
+        <div class="field reveal-box" id="emp_field_zone">
+          <label class="flabel">Zone <span class="req">*</span></label>
+          <select id="employee_zone_sel" onchange="empPopulateCircles(); buildSubmitTo();">
+            <option value="">— Select Zone —</option>
+            <option>AGRA</option><option>FIROZABAD</option><option>MATHURA</option>
+            <option>ETAH</option><option>ALIGARH</option><option>BANDA</option>
+            <option>JHANSI</option><option>KANPUR-1</option><option>KANPUR-2</option>
+          </select>
+        </div>
+
+        <!-- Circle Manager: Zone + Circle -->
+        <div class="two-col reveal-box" id="emp_field_circle">
+          <div class="field">
+            <label class="flabel">Zone <span class="req">*</span></label>
+            <select id="employee_zone_sel2" onchange="empPopulateCircles(); buildSubmitTo();">
+              <option value="">— Select Zone —</option>
+              <option>AGRA</option><option>FIROZABAD</option><option>MATHURA</option>
+              <option>ETAH</option><option>ALIGARH</option><option>BANDA</option>
+              <option>JHANSI</option><option>KANPUR-1</option><option>KANPUR-2</option>
+            </select>
+          </div>
+          <div class="field">
+            <label class="flabel">Circle <span class="req">*</span></label>
+            <select id="employee_circle_sel" onchange="empPopulateDivisions(); buildSubmitTo();"><option value="">— Select Circle —</option></select>
+          </div>
+        </div>
+
+        <!-- Supervisor: Zone + Circle + Division -->
+        <div class="field reveal-box" id="emp_field_supervisor_zone">
+          <div class="two-col">
+            <div class="field">
+              <label class="flabel">Zone <span class="req">*</span></label>
+              <select id="employee_zone_sel3" onchange="empPopulateCircles(); buildSubmitTo();">
+                <option value="">— Select Zone —</option>
+                <option>AGRA</option><option>FIROZABAD</option><option>MATHURA</option>
+                <option>ETAH</option><option>ALIGARH</option><option>BANDA</option>
+                <option>JHANSI</option><option>KANPUR-1</option><option>KANPUR-2</option>
+              </select>
+            </div>
+            <div class="field">
+              <label class="flabel">Circle <span class="req">*</span></label>
+              <select id="employee_circle_sel3" onchange="empPopulateDivisions(); buildSubmitTo();"><option value="">— Select Circle —</option></select>
+            </div>
+          </div>
+          <div class="field" style="margin-top:14px;">
+            <label class="flabel">Division (Test/Distribution) <span class="req">*</span></label>
+            <select id="employee_div_sel" onchange="buildSubmitTo()"><option value="">— Select Division —</option></select>
+          </div>
+        </div>
+
+        <!-- Meter Reader: Zone + Circle + Division + Area -->
+        <div class="field reveal-box" id="emp_field_meter_zone">
+          <div class="two-col">
+            <div class="field">
+              <label class="flabel">Zone <span class="req">*</span></label>
+              <select id="employee_zone_sel4" onchange="empPopulateCircles(); buildSubmitTo();">
+                <option value="">— Select Zone —</option>
+                <option>AGRA</option><option>FIROZABAD</option><option>MATHURA</option>
+                <option>ETAH</option><option>ALIGARH</option><option>BANDA</option>
+                <option>JHANSI</option><option>KANPUR-1</option><option>KANPUR-2</option>
+              </select>
+            </div>
+            <div class="field">
+              <label class="flabel">Circle <span class="req">*</span></label>
+              <select id="employee_circle_sel4" onchange="empPopulateDivisions(); buildSubmitTo();"><option value="">— Select Circle —</option></select>
+            </div>
+          </div>
+          <div class="two-col" style="margin-top:14px;">
+            <div class="field">
+              <label class="flabel">Division (Test/Distribution) <span class="req">*</span></label>
+              <select id="employee_div_sel4" onchange="buildSubmitTo()"><option value="">— Select Division —</option></select>
+            </div>
+            <div class="field">
+              <label class="flabel">Area <span class="req">*</span></label>
+              <input type="text" id="employee_area" placeholder="Type area…" oninput="buildSubmitTo()"/>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -731,7 +825,7 @@ const HIER=[
 // CONFIG
 // ════════════════════════════════════
 // ── HARDCODED CONFIG — works on any device/system ──
-const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxQz-v-uPsNDOQvZ8r_JXtPSTE4lSUjRLzGQpzjW0MRRkPhCERrTCKroQBbe-0onqAb9w/exec';
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbykc6R5FBG76D3o332lQalmu5vwHrOCxe0Dt-dbguFcNjdyQhI274bfQPknOw7LgMiI3w/exec';
 const FY         = '2026-2027';
 const LOC        = 'AGRA';
 
@@ -773,6 +867,10 @@ function switchLevel(level) {
   document.querySelectorAll('.submitto-pane').forEach(p => p.classList.toggle('active', p.id === 'pane-' + level));
   document.getElementById('submit_to').value = '';
   document.getElementById('submit-trail').textContent = 'Select level above to choose recipient';
+  if (level === 'employee') {
+    document.getElementById('employee_desig').value = '';
+    document.querySelectorAll('#pane-employee .reveal-box').forEach(el => el.classList.remove('show'));
+  }
 }
 
 function buildSubmitTo() {
@@ -799,6 +897,21 @@ function buildSubmitTo() {
     if (d === 'Other') { d = v('sdo_desig_other'); document.getElementById('sdo_desig_other').classList.add('show'); }
     else { document.getElementById('sdo_desig_other').classList.remove('show'); }
     if (loc) { val = loc + (d ? ' (' + d + ')' : ''); trail = 'SDO → ' + val; }
+  } else if (_currentLevel === 'employee') {
+    const d = v('employee_desig');
+    if (d === 'Zone Manager') {
+      const z = v('employee_zone_sel');
+      if (z) { val = 'Zone Manager – Zone ' + z; trail = 'Employee → Zone: ' + z + ' → Zone Manager'; }
+    } else if (d === 'Circle Manager') {
+      const z = v('employee_zone_sel2'), c = v('employee_circle_sel');
+      if (z && c) { val = 'Circle Manager – ' + c + ' (Zone: ' + z + ')'; trail = 'Employee → Zone: ' + z + ' → ' + c + ' → Circle Manager'; }
+    } else if (d === 'Supervisor') {
+      const z = v('employee_zone_sel3'), c = v('employee_circle_sel3'), dv = v('employee_div_sel');
+      if (z && c && dv) { val = 'Supervisor – ' + dv + ' (' + c + ', Zone: ' + z + ')'; trail = 'Employee → Zone: ' + z + ' → ' + c + ' → ' + dv + ' → Supervisor'; }
+    } else if (d === 'Meter Reader') {
+      const z = v('employee_zone_sel4'), c = v('employee_circle_sel4'), dv = v('employee_div_sel4'), area = v('employee_area');
+      if (z && c && dv && area) { val = 'Meter Reader – ' + area + ' (' + dv + ', ' + c + ', Zone: ' + z + ')'; trail = 'Employee → Zone: ' + z + ' → ' + c + ' → ' + dv + ' → ' + area + ' → Meter Reader'; }
+    }
   }
   document.getElementById('submit_to').value = val;
   document.getElementById('submit-trail').textContent = trail || 'Select level above to choose recipient';
@@ -821,6 +934,40 @@ function populateDists() {
 }
 function fillSelect(id, items, ph) {
   document.getElementById(id).innerHTML = '<option value="">' + ph + '</option>' + items.map(i => '<option>' + i + '</option>').join('');
+}
+
+// ── EMPLOYEE LEVEL: show/hide fields based on designation ──
+function onEmployeeDesigChange() {
+  const d = v('employee_desig');
+  document.getElementById('emp_field_zone').classList.toggle('show', d === 'Zone Manager');
+  document.getElementById('emp_field_circle').classList.toggle('show', d === 'Circle Manager');
+  document.getElementById('emp_field_supervisor_zone').classList.toggle('show', d === 'Supervisor');
+  document.getElementById('emp_field_meter_zone').classList.toggle('show', d === 'Meter Reader');
+  buildSubmitTo();
+}
+
+// ── EMPLOYEE LEVEL: zone → circle (works for all 4 zone selects) ──
+function empPopulateCircles() {
+  const d = v('employee_desig');
+  let zoneId, circleId;
+  if (d === 'Circle Manager')      { zoneId = 'employee_zone_sel2'; circleId = 'employee_circle_sel'; }
+  else if (d === 'Supervisor')     { zoneId = 'employee_zone_sel3'; circleId = 'employee_circle_sel3'; }
+  else if (d === 'Meter Reader')   { zoneId = 'employee_zone_sel4'; circleId = 'employee_circle_sel4'; }
+  else return;
+  const z = v(zoneId);
+  fillSelect(circleId, [...new Set(HIER.filter(r => r.zone === z).map(r => r.circle))], '— Select Circle —');
+}
+
+// ── EMPLOYEE LEVEL: circle → division (Test + Distribution combined) ──
+function empPopulateDivisions() {
+  const d = v('employee_desig');
+  let circleId, divId;
+  if (d === 'Supervisor')         { circleId = 'employee_circle_sel3'; divId = 'employee_div_sel'; }
+  else if (d === 'Meter Reader')  { circleId = 'employee_circle_sel4'; divId = 'employee_div_sel4'; }
+  else return;
+  const c = v(circleId);
+  const divisions = [...new Set(HIER.filter(r => r.circle === c).flatMap(r => [r.test, r.dist]))];
+  fillSelect(divId, divisions, '— Select Division —');
 }
 
 // ════════════════════════════════════
